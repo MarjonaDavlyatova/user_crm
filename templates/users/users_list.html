@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block pageheader %}<h1>Users</h1>{% endblock pageheader %}
+
+{% block main %}
+    <section class="actions top">
+        <a class="create" href="{% url 'users-create' %}">+</a>
+    </section>
+    <section>
+        <table>
+            <thead>
+                <th>Id</th>
+                <th>Username</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Actions</th>
+            </thead>
+            <tbody>
+                {% for obj in object_list %}
+                <tr>
+                    <td>{{ obj.pk }}</td>
+                    <td>{{ obj.username }}</td>
+                    <td>{{ obj.first_name }}</td>
+                    <td>{{ obj.last_name }}</td>
+                    <td>
+                        <div class="actions middle">
+                            <a class="view" href="{% url 'users-detail' obj.pk %}">&#128196;</a>
+                            <a class="update" href="{% url 'users-update' obj.pk %}">&#128221;</a>
+                            <a class="delete" href="{% url 'users-delete-confirmation' obj.pk %}">&#10006;</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+{% endblock main %}

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block pageheader %}<h1>User {{ form.instance.username }}</h1>{% endblock pageheader %}
+
+{% block main %}
+<section>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <table>
+            <tbody>
+                {{ form }}
+            </tbody>
+        </table>
+        <div class="actions footer">
+            <div>
+                <a href="{% url "users-list" %}">←</a>
+            </div>
+            <div>
+                <button class="create" type="submit">✓</button>
+            </div>
+        </div>
+    </form>
+</section>
+{% endblock main %}

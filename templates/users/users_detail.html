@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block pageheader %}<h1>User {{ object.username }}</h1>{% endblock pageheader %}
+
+{% block main %}
+<section>
+    {% include 'users/users_detail_table.html' %}
+
+    <div class="actions footer">
+        <div>
+            <a href="{% url 'users-list' %}">←</a>
+        </div>
+    </div>
+</section>
+{% endblock main %}
