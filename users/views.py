@@ -1,9 +1,10 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic import CreateView, DetailView, ListView, TemplateView
+from django.views.generic import CreateView, DetailView, ListView, TemplateView, View
+from django.utils.translation import gettext as _g
 
-from users.forms import UserForm
+from users.forms import UserForm, AuthForm
 
 User = get_user_model()
 
@@ -21,6 +22,24 @@ class UserDetailView(DetailView):
         ctx = super().get_context_data(**kwargs)
         ctx["object"] = model_to_dict(ctx["object"], exclude=["password"])
         return ctx
+
+
+class UserSearchView(ListView):
+    template_name = "users/users_list.html"
+    queryset = User.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.request.GET.get("search", ""):
+            search = self.request.GET.get("search", "")
+            queryset = queryset.filter(first_name__icontains=search)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
 
 def users_create(request):
@@ -130,7 +149,50 @@ class UserDeleteTemplateView(TemplateView):
         context["object"] = model_to_dict(user, exclude=["password"])
         return self.render_to_response(context)
 
-    def post(self, request, pk, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         user = get_object_or_404(User, pk=pk)
         user.delete()
         return redirect("users-list")
+
+
+class AuthUserView(TemplateView):
+    template_name = 'auth/login.html'
+    form = AuthForm
+    extra_context = {
+        "form": AuthForm()
+    }
+
+    def post(self, request, *args, **kwargs):
+        form = self.form(request.POST)
+        form.is_valid()
+        user = authenticate(
+            request,
+            username=form.cleaned_data["username"],
+            password=form.cleaned_data["password"],
+
+        )
+        if user:
+            login(request, user)
+            return redirect("users-list")
+
+        context = self.get_context_data()
+        context["form"] = form
+        context["error"] = _g('Пользователь не найден')
+        return self.render_to_response(context)
+
+
+
+
+class LogoutUserView(View):
+
+    def logout_and_redirect(self, request, *args, **kwargs):
+        logout(request)
+        return redirect('login')
+    
+
+    def get(self, request, *args, **kwargs):
+        return self.logout_and_redirect(request)
+    
+    def post(self, request, *args, **kwargs):
+        return self.logout_and_redirect(request)
+    

@@ -6,7 +6,10 @@ from users import views
 urlpatterns = [
     path("", views.UserListView.as_view(), name="users-list"),
     path("create/", views.users_create, name="users-create"),
-    path("<pk>/", views.UserDetailView.as_view(), name="users-detail"),
+    path("<pk>", views.UserDetailView.as_view(), name="users-detail"),
     path("<pk>/update/", views.users_update, name="users-update"),
     path("<pk>/delete/", views.users_delete, name="users-delete-confirmation"),
+    path("search/", views.UserSearchView.as_view(), name="users-search"),
+    path("login/", views.AuthUserView.as_view(), name="login"),
+    path("logout/", views.LogoutUserView.as_view(), name="logout"),
 ]

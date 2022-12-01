@@ -28,6 +28,9 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+# auth form (lusername, password)
+# view auth, redirect user-list
+
 # Application definition
 
 INSTALLED_APPS = [

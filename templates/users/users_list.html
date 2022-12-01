@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 
-{% block pageheader %}<h1>Users</h1>{% endblock pageheader %}
+{% block pageheader %}
+<h1>Users</h1>
+<div>
+    {{ user.last_name }} {{ user.first_name }}
+    <a href="{% url 'logout' %}">Logout</a>
+</div>
+{% endblock pageheader %}
 
 {% block main %}
     <section class="actions top">
